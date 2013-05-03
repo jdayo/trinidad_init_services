@@ -82,10 +82,18 @@ if [[ "$JAVA_STACK" != "-Xss"* ]] ; then
   JAVA_STACK="-Xss$JAVA_STACK"
 fi
 
+if [ -z "$JAVA_PERMSIZE" ] ; then
+  JAVA_PERMSIZE="-XX:MaxPermSize=128M"
+fi
+
+if [ -z "$JAVA_CMSCLASSUNLOADING" ] ; then
+  JAVA_CMSCLASSUNLOADING="-XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled"
+fi
+
 # A custom (daemon) script will be started (not jruby -S) thus JRUBY_OPTS
 # won't be used here, feel free to hand tune JAVA_OPTS here instead ...
 
-JAVA_OPTS="$JAVA_MEM $JAVA_MEM_MIN $JAVA_STACK -Xbootclasspath/a:$JRUBY_HOME/lib/jruby.jar"
+JAVA_OPTS="$JAVA_MEM $JAVA_MEM_MIN $JAVA_STACK $JAVA_PERMSIZE $JAVA_CMSCLASSUNLOADING -Xbootclasspath/a:$JRUBY_HOME/lib/jruby.jar"
 
 # force file.encoding to UTF-8 :
 if [[ -z "$JAVA_ENCODING" ]]; then
